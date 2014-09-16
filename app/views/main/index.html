@@ -1,0 +1,25 @@
+<div class="layout">
+  <div class="toolbar">
+    <span class="btn btn-primary">加载</span>
+    <span class="btn btn-primary">保存</span>
+
+    <label>折叠级别</label>
+
+    <div class="btn-group">
+      <label class="btn btn-success btn-sm" ng-repeat="level in vm.foldLevels"
+             ng-class="{active: level.id === vm.currentFoldLevel.id}">
+        <input type="radio" name="fold.level" ng-model="vm.currentFoldLevel" ng-value="level" class="hidden"
+               ng-change="vm.foldTo(vm.currentFoldLevel)"/>
+        {{level.name}}
+      </label>
+    </div>
+    <span class="btn btn-primary" ng-click="vm.exportHtml()">导出HTML</span>
+    <span class="btn btn-primary">打印</span>
+    <span class="btn btn-primary">样式表</span>
+  </div>
+  <div class="main">
+    <div class="editor" ui-codemirror="vm.options" ng-model="vm.text" ng-change="vm.save()">
+    </div>
+    <iframe class="preview" src="preview.html" tw-doc="vm.html()"></iframe>
+  </div>
+</div>

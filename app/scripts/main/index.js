@@ -1,8 +1,9 @@
 'use strict';
 
-angular.module('app').controller('MainIndexCtrl', function () {
+angular.module('app').controller('MainIndexCtrl', function ($http, pageSettings, foldSettings) {
   var vm = this;
-  vm.options = {mode: "markdown",
+  vm.markdownOptions = {
+    mode: "markdown",
     lineNumbers: true,
     lineWrapping: true,
     extraKeys: {"Ctrl-Q": function (cm) {
@@ -11,30 +12,54 @@ angular.module('app').controller('MainIndexCtrl', function () {
     foldGutter: true,
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
   };
+  vm.cssOptions = {
+    mode: "css",
+    lineNumbers: true,
+    lineWrapping: true
+  };
+  vm.activePage = 1;
   vm.text = '';
+  $http.get('styles/preview.css').success(function(text) {
+    vm.styles = text;
+  });
   vm.html = function () {
-    return '<style>table{border: 1px solid gray;}</style>' + marked(vm.text);
+    return marked(vm.text);
   };
   vm.load = function () {
-    vm.text = localStorage.getItem('content');
+    vm.text = sessionStorage.getItem('content');
   };
   vm.save = function () {
-    localStorage.setItem('content', vm.text);
+    sessionStorage.setItem('content', vm.text);
   };
   vm.load();
-  vm.foldLevels = [
-    {id: 1, name: '1'},
-    {id: 2, name: '2'},
-    {id: 3, name: '3'},
-    {id: 4, name: '4'},
-    {id: 5, name: '5'},
-    {id: 6, name: '6'},
-    {id: 7, name: '7'},
-    {id: 8, name: '8'},
-    {id: 9, name: '9'}
-  ];
+  vm.fold = foldSettings;
   vm.foldTo = function(level) {
 
   };
-  vm.currentFoldLevel = {};
+  vm.preview = null;
+  vm.print = function() {
+    vm.preview.print();
+  };
+  vm.loadMarkdown = function(text) {
+    vm.text = text;
+  };
+  vm.saveMarkdown = function() {
+    var blob = new Blob([vm.text], {type: "application/json;charset=utf-8"});
+    saveAs(blob, "doc.md");
+  };
+  vm.loadCss = function(text) {
+    vm.styles = text;
+  };
+  vm.saveCss = function() {
+    var blob = new Blob([vm.styles], {type: "text/css;charset=utf-8"});
+    saveAs(blob, "theme.css");
+  };
+  vm.saveAsHtml = function() {
+    var blob = new Blob([vm.html()], {type: "application/json;charset=utf-8"});
+    saveAs(blob, "doc.html");
+  };
+  vm.setZoom = function(factor) {
+    vm.preview.document.body.style.zoom = factor;
+  };
+  vm.page = pageSettings;
 });

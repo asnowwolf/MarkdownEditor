@@ -1,25 +1,70 @@
-<div class="layout">
-  <div class="toolbar">
-    <span class="btn btn-primary">加载</span>
-    <span class="btn btn-primary">保存</span>
+<div class="toolbar">
+  <label>折叠级别</label>
 
-    <label>折叠级别</label>
-
-    <div class="btn-group">
-      <label class="btn btn-success btn-sm" ng-repeat="level in vm.foldLevels"
-             ng-class="{active: level.id === vm.currentFoldLevel.id}">
-        <input type="radio" name="fold.level" ng-model="vm.currentFoldLevel" ng-value="level" class="hidden"
-               ng-change="vm.foldTo(vm.currentFoldLevel)"/>
-        {{level.name}}
-      </label>
-    </div>
-    <span class="btn btn-primary" ng-click="vm.exportHtml()">导出HTML</span>
-    <span class="btn btn-primary">打印</span>
-    <span class="btn btn-primary">样式表</span>
+  <div class="btn-group">
+    <label class="btn btn-success btn-sm" ng-repeat="level in vm.fold.levels"
+           ng-class="{active: vm.fold.isActive(level)}">
+      <input type="radio" name="fold.level" ng-model="vm.fold.level" ng-value="level" class="hidden"
+             ng-change="vm.foldTo(vm.fold.level)"/>
+      {{level.name}}
+    </label>
   </div>
-  <div class="main">
-    <div class="editor" ui-codemirror="vm.options" ng-model="vm.text" ng-change="vm.save()">
+  <span class="btn btn-primary" ng-click="vm.saveAsHtml()">导出HTML</span>
+  <span class="btn btn-primary" ng-click="vm.print()">打印</span>
+</div>
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-md-6">
+
+      <ul class="nav nav-tabs" role="tablist">
+        <li ng-class="{active: vm.activePage === 1}" role="presentation">
+          <a href="javascript:void(0);" ng-click="vm.activePage = 1">内容</a>
+        </li>
+        <li ng-class="{active: vm.activePage === 2}" role="presentation">
+          <a href="javascript:void(0);" ng-click="vm.activePage = 2">样式</a>
+        </li>
+      </ul>
+      <div ng-class="{hidden: vm.activePage !== 1}">
+        <div class="toolbar">
+          <label class="btn btn-primary uploader">加载
+            <input type="file" tw-uploader="vm.loadMarkdown(text)"/>
+          </label>
+          <span class="btn btn-primary" ng-click="vm.saveMarkdown()">保存</span>
+        </div>
+
+        <div class="editor" ui-codemirror="vm.markdownOptions"
+             ng-model="vm.text" ng-change="vm.save()"></div>
+
+      </div>
+      <div ng-class="{hidden: vm.activePage !== 2}">
+        <div class="toolbar">
+          <label class="btn btn-primary uploader">加载
+            <input type="file" tw-uploader="vm.loadCss(text)"/>
+          </label>
+          <span class="btn btn-primary" ng-click="vm.saveCss()">保存</span>
+        </div>
+        <div class="editor" ui-codemirror="vm.cssOptions"
+             ng-model="vm.styles"></div>
+      </div>
     </div>
-    <iframe class="preview" src="preview.html" tw-doc="vm.html()"></iframe>
+    <div class="col-md-6">
+      <div class="toolbar">
+        <label>版面<select ng-options="paper as paper.name for paper in vm.page.papers" ng-model="vm.page.paper"></select></label>
+        <label ng-repeat="landscape in vm.page.landscapes"><input type="radio" name="page-landscape"
+                                                                  ng-model="vm.page.landscape" ng-value="landscape"
+                                                                  ng-checked="vm.page.landscape.id === landscape.id"/>{{landscape.name}}</label>
+        <label>放大倍数</label>
+        <label ng-repeat="zoom in vm.page.zooms"><input type="radio" name="page-zoom" ng-model="vm.page.zoom"
+                                                        ng-value="zoom" ng-checked="vm.page.zoom.id === zoom.id"
+                                                        ng-change="vm.setZoom(zoom.value)"/>{{zoom.name}}</label>
+        <label class="label label-warning">注意：真正缩放效果请看预览</label>
+      </div>
+      <div class="scroll-box">
+        <iframe class="preview" ng-style="{width: vm.page.width(), height: vm.page.height(), zoom: vm.page.zoom.value}"
+                src="about:blank" tw-i-frame html="vm.html()" css="vm.styles"
+                ng-model="vm.preview"></iframe>
+      </div>
+    </div>
   </div>
 </div>

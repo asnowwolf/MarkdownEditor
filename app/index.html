@@ -42,9 +42,12 @@
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/codemirror/lib/codemirror.js"></script>
     <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+    <script src="bower_components/lodash/dist/lodash.compat.js"></script>
     <!-- endbower -->
+    <script src="libs/FileSaver.js"></script>
     <script src="bower_components/marked/lib/marked.js"></script>
     <script src="bower_components/codemirror/mode/markdown/markdown.js"></script>
+    <script src="bower_components/codemirror/mode/css/css.js"></script>
     <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
     <script src="bower_components/codemirror/addon/fold/foldcode.js"></script>
     <script src="bower_components/codemirror/addon/fold/foldgutter.js"></script>
@@ -57,8 +60,12 @@
 
     <!-- build:js({app,.tmp}) scripts/main.js -->
     <script src="scripts/app.js"></script>
+    <script src="scripts/config/router.js"></script>
+    <script src="scripts/services/pageSettings.js"></script>
+    <script src="scripts/services/foldSettings.js"></script>
     <script src="scripts/main/index.js"></script>
-    <script src="scripts/directives/twDoc.js"></script>
+    <script src="scripts/directives/twIFrame.js"></script>
+    <script src="scripts/directives/twUploader.js"></script>
     <!-- inject:partials -->
     <!-- endinject -->
     <!-- endbuild -->
